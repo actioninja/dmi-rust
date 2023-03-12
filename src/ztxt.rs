@@ -297,7 +297,8 @@ impl RawZtxtData {
 	}
 }
 
-#[must_use] pub fn encode(text_to_compress: &[u8]) -> Vec<u8> {
+#[must_use]
+pub fn encode(text_to_compress: &[u8]) -> Vec<u8> {
 	deflate::deflate_bytes_zlib(text_to_compress)
 }
 

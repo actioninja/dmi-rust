@@ -22,7 +22,8 @@ pub struct RawDmi {
 }
 
 impl RawDmi {
-	#[must_use] pub fn new() -> RawDmi {
+	#[must_use]
+	pub fn new() -> RawDmi {
 		RawDmi {
 			..Default::default()
 		}

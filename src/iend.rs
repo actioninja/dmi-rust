@@ -12,13 +12,15 @@ pub struct RawIendChunk {
 }
 
 impl RawIendChunk {
-	#[must_use] pub fn new() -> RawIendChunk {
+	#[must_use]
+	pub fn new() -> RawIendChunk {
 		RawIendChunk {
 			..Default::default()
 		}
 	}
 
-	#[must_use] pub fn length(&self) -> usize {
+	#[must_use]
+	pub fn length(&self) -> usize {
 		self.data_length.len() + self.chunk_type.len() + self.crc.len()
 	}
 
