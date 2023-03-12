@@ -61,13 +61,10 @@ impl Icon {
 		};
 		let width = split_version[1].parse::<u32>()?;
 
-		let current_line = match decompressed_text.next() {
-			Some(thing) => thing,
-			None => {
-				return Err(error::DmiError::Generic(
-					"Error loading icon: no height found.".to_string(),
-				))
-			}
+		let Some(current_line) = decompressed_text.next() else {
+			return Err(error::DmiError::Generic(
+				"Error loading icon: no height found.".to_string()
+			))
 		};
 		let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 		if split_version.len() != 2 || split_version[0] != "\theight" {
@@ -79,7 +76,8 @@ impl Icon {
 
 		if width == 0 || height == 0 {
 			return Err(error::DmiError::Generic(format!(
-				"Error loading icon: invalid width ({width}) / height ({height}) values.")));
+				"Error loading icon: invalid width ({width}) / height ({height}) values."
+			)));
 		};
 
 		// Image time.
@@ -101,13 +99,10 @@ impl Icon {
 
 		let mut index = 0;
 
-		let mut current_line = match decompressed_text.next() {
-			Some(thing) => thing,
-			None => {
-				return Err(error::DmiError::Generic(
-					"Error loading icon: no DMI trailer nor states found.".to_string(),
-				))
-			}
+		let Some(mut current_line) = decompressed_text.next() else {
+			return Err(error::DmiError::Generic(
+				"Error loading icon: no DMI trailer nor states found.".to_string(),
+			))
 		};
 
 		let mut states = vec![];
@@ -296,9 +291,7 @@ impl Icon {
 			};
 
 			if let Some([array_0, array_1, array_2]) = icon_state.hotspot {
-				signature.push_str(&format!(
-					"\tarray = {array_0},{array_1},{array_2}\n",
-				));
+				signature.push_str(&format!("\tarray = {array_0},{array_1},{array_2}\n",));
 			};
 
 			match &icon_state.unknown_settings {
