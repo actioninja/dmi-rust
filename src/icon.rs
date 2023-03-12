@@ -31,24 +31,21 @@ impl Icon {
 		let current_line = decompressed_text.next();
 		if current_line != Some("# BEGIN DMI") {
 			return Err(error::DmiError::Generic(format!(
-				"Error loading icon: no DMI header found. Beginning: {:#?}",
-				current_line
+				"Error loading icon: no DMI header found. Beginning: {current_line:#?}"
 			)));
 		};
 
-		let current_line = match decompressed_text.next() {
-			Some(thing) => thing,
-			None => {
+		let current_line = if let Some(thing) = decompressed_text.next() {
+			thing
+		} else {
 				return Err(error::DmiError::Generic(
 					"Error loading icon: no version header found.".to_string(),
 				))
-			}
 		};
 		let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 		if split_version.len() != 2 || split_version[0] != "version" {
 			return Err(error::DmiError::Generic(format!(
-				"Error loading icon: improper version header found: {:#?}",
-				split_version
+				"Error loading icon: improper version header found: {split_version:#?}"
 			)));
 		};
 		let version = split_version[1].to_string();
@@ -64,8 +61,7 @@ impl Icon {
 		let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 		if split_version.len() != 2 || split_version[0] != "\twidth" {
 			return Err(error::DmiError::Generic(format!(
-				"Error loading icon: improper width found: {:#?}",
-				split_version
+				"Error loading icon: improper width found: {split_version:#?}"
 			)));
 		};
 		let width = split_version[1].parse::<u32>()?;
@@ -81,17 +77,14 @@ impl Icon {
 		let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 		if split_version.len() != 2 || split_version[0] != "\theight" {
 			return Err(error::DmiError::Generic(format!(
-				"Error loading icon: improper height found: {:#?}",
-				split_version
+				"Error loading icon: improper height found: {split_version:#?}"
 			)));
 		};
 		let height = split_version[1].parse::<u32>()?;
 
 		if width == 0 || height == 0 {
 			return Err(error::DmiError::Generic(format!(
-				"Error loading icon: invalid width ({}) / height ({}) values.",
-				width, height
-			)));
+				"Error loading icon: invalid width ({width}) / height ({height}) values.")));
 		};
 
 		// Image time.
@@ -104,7 +97,7 @@ impl Icon {
 		let img_height = dimensions.1;
 
 		if img_width == 0 || img_height == 0 || img_width % width != 0 || img_height % height != 0 {
-			return Err(error::DmiError::Generic(format!("Error loading icon: invalid image width ({}) / height ({}) values. Missmatch with metadata width ({}) / height ({}).", img_width, img_height, width, height)));
+			return Err(error::DmiError::Generic(format!("Error loading icon: invalid image width ({img_width}) / height ({img_height}) values. Mismatch with metadata width ({width}) / height ({height}).")));
 		};
 
 		let width_in_states = img_width / width;
@@ -132,20 +125,18 @@ impl Icon {
 			let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 			if split_version.len() != 2 || split_version[0] != "state" {
 				return Err(error::DmiError::Generic(format!(
-					"Error loading icon: improper state found: {:#?}",
-					split_version
+					"Error loading icon: improper state found: {split_version:#?}"
 				)));
 			};
 
 			let name = split_version[1].as_bytes();
 			if !name.starts_with(&[b'\"']) || !name.ends_with(&[b'\"']) {
-				return Err(error::DmiError::Generic(format!("Error loading icon: invalid name icon_state found in metadata, should be preceded and succeeded by double-quotes (\"): {:#?}", name)));
+				return Err(error::DmiError::Generic(format!("Error loading icon: invalid name icon_state found in metadata, should be preceded and succeeded by double-quotes (\"): {name:#?}")));
 			};
 			let name = match name.len() {
 				0 | 1 => {
 					return Err(error::DmiError::Generic(format!(
-						"Error loading icon: invalid name icon_state found in metadata, improper size: {:#?}",
-						name
+						"Error loading icon: invalid name icon_state found in metadata, improper size: {name:#?}"
 					)))
 				}
 				2 => String::new(), //Only the quotes, empty name otherwise.
