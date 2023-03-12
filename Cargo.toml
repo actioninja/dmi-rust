@@ -2,6 +2,7 @@
 name = "dmi"
 version = "0.2.1"
 edition = "2021"
+rust-version = "1.65"
 license = "MIT"
 description = "DMI library written in Rust. Provides helpers to manipulate and produce DMI format files."
 authors = ["Rohesie <rohesie@gmail.com>"]

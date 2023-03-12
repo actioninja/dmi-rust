@@ -35,9 +35,7 @@ impl Icon {
 			)));
 		};
 
-		let current_line = if let Some(thing) = decompressed_text.next() {
-			thing
-		} else {
+		let Some(current_line) = decompressed_text.next() else {
 				return Err(error::DmiError::Generic(
 					"Error loading icon: no version header found.".to_string(),
 				))
@@ -50,13 +48,10 @@ impl Icon {
 		};
 		let version = split_version[1].to_string();
 
-		let current_line = match decompressed_text.next() {
-			Some(thing) => thing,
-			None => {
-				return Err(error::DmiError::Generic(
-					"Error loading icon: no width found.".to_string(),
-				))
-			}
+		let Some(current_line) = decompressed_text.next() else {
+			return Err(error::DmiError::Generic(
+				"Error loading icon: no width found.".to_string(),
+			))
 		};
 		let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 		if split_version.len() != 2 || split_version[0] != "\twidth" {
@@ -290,21 +285,20 @@ impl Icon {
 					None => return Err(error::DmiError::Generic(format!("Error saving Icon: number of frames ({}) larger than one without a delay entry in icon state of name \"{}\".", icon_state.frames, icon_state.name)))
 				};
 				if let Some(flag) = icon_state.loop_flag {
-					signature.push_str(&format!("\tloop = {flag}\n"))
+					signature.push_str(&format!("\tloop = {flag}\n"));
 				}
 				if let Some(flag) = icon_state.rewind {
-					signature.push_str(&format!("\trewind = {flag}\n"))
+					signature.push_str(&format!("\trewind = {flag}\n"));
 				}
 				if let Some(flag) = icon_state.movement {
-					signature.push_str(&format!("\tmovement = {flag}\n"))
+					signature.push_str(&format!("\tmovement = {flag}\n"));
 				}
 			};
 
-			if let Some(array) = icon_state.hotspot {
+			if let Some([array_0, array_1, array_2]) = icon_state.hotspot {
 				signature.push_str(&format!(
-					"\tarray = {},{},{}\n",
-					array[0], array[1], array[2]
-				))
+					"\tarray = {array_0},{array_1},{array_2}\n",
+				));
 			};
 
 			match &icon_state.unknown_settings {
