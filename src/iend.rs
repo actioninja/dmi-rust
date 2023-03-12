@@ -12,13 +12,13 @@ pub struct RawIendChunk {
 }
 
 impl RawIendChunk {
-	pub fn new() -> RawIendChunk {
+	#[must_use] pub fn new() -> RawIendChunk {
 		RawIendChunk {
 			..Default::default()
 		}
 	}
 
-	pub fn length(&self) -> usize {
+	#[must_use] pub fn length(&self) -> usize {
 		self.data_length.len() + self.chunk_type.len() + self.crc.len()
 	}
 
@@ -84,8 +84,7 @@ impl RawIendChunk {
 		let mut total_bytes_written = bytes_written;
 		if bytes_written < self.data_length.len() {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to save IEND chunk. Buffer unable to hold the data, only {} bytes written.",
-				total_bytes_written
+				"Failed to save IEND chunk. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 			)));
 		};
 
@@ -93,8 +92,7 @@ impl RawIendChunk {
 		total_bytes_written += bytes_written;
 		if bytes_written < self.chunk_type.len() {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to save IEND chunk. Buffer unable to hold the data, only {} bytes written.",
-				total_bytes_written
+				"Failed to save IEND chunk. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 			)));
 		};
 
@@ -102,8 +100,7 @@ impl RawIendChunk {
 		total_bytes_written += bytes_written;
 		if bytes_written < self.crc.len() {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to save IEND chunk. Buffer unable to hold the data, only {} bytes written.",
-				total_bytes_written
+				"Failed to save IEND chunk. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 			)));
 		};
 
@@ -129,8 +126,7 @@ impl TryFrom<chunk::RawGenericChunk> for RawIendChunk {
 	fn try_from(raw_generic_chunk: chunk::RawGenericChunk) -> Result<Self, Self::Error> {
 		if !raw_generic_chunk.data.is_empty() {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to convert RawGenericChunk into RawIendChunk. Non-empty data field. Chunk: {:#?}.",
-				raw_generic_chunk
+				"Failed to convert RawGenericChunk into RawIendChunk. Non-empty data field. Chunk: {raw_generic_chunk:#?}."
 			)));
 		};
 

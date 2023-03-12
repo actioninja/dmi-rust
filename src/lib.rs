@@ -22,7 +22,7 @@ pub struct RawDmi {
 }
 
 impl RawDmi {
-	pub fn new() -> RawDmi {
+	#[must_use] pub fn new() -> RawDmi {
 		RawDmi {
 			..Default::default()
 		}
@@ -46,8 +46,7 @@ impl RawDmi {
 		let header = &dmi_bytes[0..8];
 		if dmi_bytes[0..8] != PNG_HEADER {
 			return Err(error::DmiError::Generic(format!(
-				"PNG header mismatch (expected {:#?}, found {:#?})",
-				PNG_HEADER, header
+				"PNG header mismatch (expected {PNG_HEADER:#?}, found {header:#?})"
 			)));
 		};
 		let header = PNG_HEADER;
@@ -125,8 +124,7 @@ impl RawDmi {
 		let mut total_bytes_written = bytes_written;
 		if bytes_written < 8 {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-				total_bytes_written
+				"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 			)));
 		};
 
@@ -134,8 +132,7 @@ impl RawDmi {
 		total_bytes_written += bytes_written;
 		if bytes_written < u32::from_be_bytes(self.chunk_ihdr.data_length) as usize + 12 {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-				total_bytes_written
+				"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 			)));
 		};
 
@@ -145,8 +142,7 @@ impl RawDmi {
 				total_bytes_written += bytes_written;
 				if bytes_written < u32::from_be_bytes(chunk_ztxt.data_length) as usize + 12 {
 					return Err(error::DmiError::Generic(format!(
-						"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-						total_bytes_written
+						"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 					)));
 				};
 			}
@@ -159,8 +155,7 @@ impl RawDmi {
 				total_bytes_written += bytes_written;
 				if bytes_written < u32::from_be_bytes(chunk_plte.data_length) as usize + 12 {
 					return Err(error::DmiError::Generic(format!(
-						"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-						total_bytes_written
+						"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 					)));
 				};
 			}
@@ -174,8 +169,7 @@ impl RawDmi {
 					total_bytes_written += bytes_written;
 					if bytes_written < u32::from_be_bytes(chunk.data_length) as usize + 12 {
 						return Err(error::DmiError::Generic(format!(
-							"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-							total_bytes_written
+							"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 						)));
 					};
 				}
@@ -188,8 +182,7 @@ impl RawDmi {
 			total_bytes_written += bytes_written;
 			if bytes_written < u32::from_be_bytes(chunk.data_length) as usize + 12 {
 				return Err(error::DmiError::Generic(format!(
-					"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-					total_bytes_written
+					"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 				)));
 			};
 		}
@@ -198,8 +191,7 @@ impl RawDmi {
 		total_bytes_written += bytes_written;
 		if bytes_written < u32::from_be_bytes(self.chunk_iend.data_length) as usize + 12 {
 			return Err(error::DmiError::Generic(format!(
-				"Failed to save DMI. Buffer unable to hold the data, only {} bytes written.",
-				total_bytes_written
+				"Failed to save DMI. Buffer unable to hold the data, only {total_bytes_written} bytes written."
 			)));
 		};
 

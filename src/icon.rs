@@ -168,8 +168,7 @@ impl Icon {
 				let split_version: Vec<&str> = current_line.split_terminator(" = ").collect();
 				if split_version.len() != 2 {
 					return Err(error::DmiError::Generic(format!(
-						"Error loading icon: improper state found: {:#?}",
-						split_version
+						"Error loading icon: improper state found: {split_version:#?}"
 					)));
 				};
 
@@ -191,8 +190,7 @@ impl Icon {
 						let text_coordinates: Vec<&str> = split_version[1].split_terminator(',').collect();
 						if text_coordinates.len() != 3 {
 							return Err(error::DmiError::Generic(format!(
-								"Error loading icon: improper hotspot found: {:#?}",
-								split_version
+								"Error loading icon: improper hotspot found: {split_version:#?}"
 							)));
 						};
 						hotspot = Some([
@@ -219,15 +217,14 @@ impl Icon {
 
 			if dirs.is_none() || frames.is_none() {
 				return Err(error::DmiError::Generic(format!(
-					"Error loading icon: state lacks essential settings. dirs: {:#?}. frames: {:#?}.",
-					dirs, frames
+					"Error loading icon: state lacks essential settings. dirs: {dirs:#?}. frames: {frames:#?}."
 				)));
 			};
 			let dirs = dirs.unwrap();
 			let frames = frames.unwrap();
 
-			if index + (dirs as u32 * frames) > max_possible_states {
-				return Err(error::DmiError::Generic(format!("Error loading icon: metadata settings exceeded the maximum number of states possible ({}).", max_possible_states)));
+			if index + (u32::from(dirs) * frames) > max_possible_states {
+				return Err(error::DmiError::Generic(format!("Error loading icon: metadata settings exceeded the maximum number of states possible ({max_possible_states}).")));
 			};
 
 			let mut images = vec![];
@@ -272,7 +269,7 @@ impl Icon {
 		);
 
 		for icon_state in &self.states {
-			if icon_state.images.len() as u32 != icon_state.dirs as u32 * icon_state.frames {
+			if icon_state.images.len() as u32 != u32::from(icon_state.dirs) * icon_state.frames {
 				return Err(error::DmiError::Generic(format!("Error saving Icon: number of images ({}) differs from the stated metadata. Dirs: {}. Frames: {}. Name: \"{}\".", icon_state.images.len(), icon_state.dirs, icon_state.frames, icon_state.name)));
 			};
 
@@ -293,13 +290,13 @@ impl Icon {
 					None => return Err(error::DmiError::Generic(format!("Error saving Icon: number of frames ({}) larger than one without a delay entry in icon state of name \"{}\".", icon_state.frames, icon_state.name)))
 				};
 				if let Some(flag) = icon_state.loop_flag {
-					signature.push_str(&format!("\tloop = {}\n", flag))
+					signature.push_str(&format!("\tloop = {flag}\n"))
 				}
 				if let Some(flag) = icon_state.rewind {
-					signature.push_str(&format!("\trewind = {}\n", flag))
+					signature.push_str(&format!("\trewind = {flag}\n"))
 				}
 				if let Some(flag) = icon_state.movement {
-					signature.push_str(&format!("\tmovement = {}\n", flag))
+					signature.push_str(&format!("\tmovement = {flag}\n"))
 				}
 			};
 
@@ -313,7 +310,7 @@ impl Icon {
 			match &icon_state.unknown_settings {
 				Some(hashmap) => {
 					for (setting, value) in hashmap.iter() {
-						signature.push_str(&format!("\t{} = {}\n", setting, value));
+						signature.push_str(&format!("\t{setting} = {value}\n"));
 					}
 				}
 				None => (),
